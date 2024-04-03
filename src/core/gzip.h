@@ -1,5 +1,4 @@
-#ifndef GZIP_H
-#define GZIP_H
+#pragma once
 
 #include <QtCore>
 
@@ -11,5 +10,3 @@ public:
 	static QByteArray decompress(const char *data, int size, int decSize);
 	static QByteArray compress(const char *ungzip, int size);
 };
-
-#endif // GZIP_H

@@ -1,5 +1,4 @@
-#ifndef DEF_FF7TEXT
-#define DEF_FF7TEXT
+#pragma once
 
 #include <QtCore>
 
@@ -31,5 +30,3 @@ private:
 	static const char *caract_jp_fe[256];
 	QByteArray _data;
 };
-
-#endif

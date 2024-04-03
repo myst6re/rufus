@@ -16,6 +16,7 @@ SOURCES += \
     src/core/ff7text.cpp \
     src/core/gzip.cpp \
     src/core/csvfile.cpp \
+    src/core/kernelbin.cpp \
     src/arguments.cpp \
     src/main.cpp
 
@@ -24,6 +25,7 @@ HEADERS += \
     src/core/ff7text.h \
     src/core/gzip.h \
     src/core/csvfile.h \
+    src/core/kernelbin.h \
     src/arguments.h
 
 # Default rules for deployment.

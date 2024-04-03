@@ -10,6 +10,9 @@ Arguments::Arguments()
 	RUFUS_ADD_ARGUMENT(RUFUS_OPTION_NAMES("f", "file"),
 	                 "Input/output CSV file path.",
 	                 "file", "");
+	RUFUS_ADD_ARGUMENT(RUFUS_OPTION_NAMES("k", "kernel"),
+	                 "kernel.bin path to update the pointers to the scene.bin.",
+	                 "kernel", "");
 	RUFUS_ADD_FLAG(RUFUS_OPTION_NAMES("i", "import"),
 	                 "Import CSV file to scene.bin (export by default if this flag is absent).");
 	RUFUS_ADD_FLAG(RUFUS_OPTION_NAMES("j", "japan"),
@@ -34,6 +37,11 @@ QString Arguments::filePath() const
 	}
 
 	return ret;
+}
+
+QString Arguments::kernelPath() const
+{
+	return _parser.value("kernel");
 }
 
 bool Arguments::import() const
