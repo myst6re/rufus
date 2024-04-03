@@ -1,0 +1,23 @@
+#include <windows.h>
+
+VS_VERSION_INFO VERSIONINFO
+    FILEVERSION       RC_PRODUCT_VERSION
+    PRODUCTVERSION    RC_PRODUCT_VERSION
+    FILEOS            VOS_UNKNOWN
+    FILETYPE          VFT_APP
+    FILESUBTYPE       VFT2_UNKNOWN
+    FILEFLAGSMASK     0x00000000
+    FILEFLAGS         0x00000000
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040C04E4"
+        BEGIN
+            VALUE "CompanyName",        RC_COMPANY_NAME_STR
+            VALUE "FileDescription",    PROG_NAME
+            VALUE "ProductName",        PROG_NAME
+            VALUE "FileVersion",        PROG_VERSION
+            VALUE "ProductVersion",     PROG_VERSION
+        END
+    END
+END
