@@ -243,7 +243,7 @@ bool SceneFile::open(const QString &path)
 
 bool SceneFile::open(const QByteArray &data, bool jp)
 {
-	_data = data.left(7808);
+	_data = data.left(0x1E80);
 
 	const quint8 nameLen = jp ? 16 : 32,
 			ennemySectionLen = 0x98 + nameLen;
@@ -527,7 +527,7 @@ bool Scene::save(QByteArray &data, QList<quint8> *sceneCountPerBlock) const
 		// Save scene
 		QByteArray sceneData;
 		scene.save(sceneData);
-		QByteArray compressedScene = GZIP::compress(sceneData, 9);
+		QByteArray compressedScene = GZIP::compress(sceneData);
 
 		// FIXME: >= 15 or > 15? No matters, this case won't happen, and if so, it won't break the fileformat
 		if (sceneFileID >= 15

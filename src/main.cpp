@@ -80,6 +80,10 @@ int main(int argc, char *argv[])
 				attackNames.append(FF7Text(line.at(2), jp).data());
 			}
 			sf.setAttackNames(attackNames);
+			if (!sf.compile()) {
+				qWarning() << "Error: Cannot compile scene.bin" << args.scenePath();
+				args.showHelp(1);
+			}
 
 			scene.setScene(sceneId, sf);
 			sceneId += 1;
@@ -122,12 +126,13 @@ int main(int argc, char *argv[])
 			if (battlePart.mid(COUNT_PER_BLOCKS_POS, COUNT_PER_BLOCKS_SIZE) != scenePosPerblock) {
 				battlePart.replace(COUNT_PER_BLOCKS_POS, COUNT_PER_BLOCKS_SIZE, scenePosPerblock);
 				kernel.setPart(KernelBin::Battle, battlePart);
+				qDebug() << "Update kernel.bin at" << kernelPath;
 				if (!kernel.save(kernelPath)) {
 					qWarning() << "KernelPatch::apply cannot save kernel.bin" << kernelPath;
 					args.showHelp(1);
 				}
 			} else {
-				qWarning() << "KernelPatch::apply battle scene part not updated (2)";
+				qDebug() << "kernel.bin no need to be updated";
 				args.showHelp(1);
 			}
 		}

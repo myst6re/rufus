@@ -96,7 +96,7 @@ void KernelBin::setPart(int id, const QByteArray &data)
 	if (data.size() % 2 != 0) {
 		part.append('\xFF'); // Align
 	}
-	_partsLzs[id] = GZIP::compress(part, 9);
+	_partsLzs[id] = GZIP::compress(part);
 	_decSizes[id] = part.size();
 	_isModified = true;
 }
