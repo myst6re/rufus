@@ -24,7 +24,9 @@ int main(int argc, char *argv[])
 		qWarning() << "Error: Cannot open scene.bin at" << scenePath;
 		args.showHelp(1);
 	} else if (args.import()) {
-		QFile f(args.filePath());
+		bool skipScriptTexts = args.skipScriptTexts();
+		uint col = args.column();
+		QFile f(filePath);
 		if (! f.open(QIODevice::ReadOnly)) {
 			qWarning() << "Error: Cannot open source file" << f.errorString() << f.fileName();
 			args.showHelp(1);
@@ -35,49 +37,63 @@ int main(int argc, char *argv[])
 		QList<SceneFile> scenes = scene.scenes();
 		for (SceneFile sf: scenes) {
 			for (int ennemyId = 0; ennemyId < 3; ++ennemyId) {
-				qDebug() << QString("%1 %2 name").arg(sceneId).arg(ennemyId);
 				if (! csv.readLine(line) || line.size() < 3) {
 					qWarning() << "Error: No more lines";
 					args.showHelp(1);
 				}
-				sf.setEnnemyName(ennemyId, FF7Text(line.at(2), jp).data());
-				QList<SceneScript> scripts = sf.ennemyScript(ennemyId);
-				for (SceneScript &script: scripts) {
-					if (script.isNull()) {
-						continue;
-					}
-
-					int scriptTextId = 0;
-					SceneScriptMutableIterator it(script);
+				sf.setEnnemyName(ennemyId, FF7Text(line.at(col), jp).data());
+				
+				if (skipScriptTexts) {
 					forever {
-						int pos = -1;
-						it.nextTextData(pos);
-
-						if (pos < 0) {
-							break;
-						}
-
-						qDebug() << QString("%1 %2 %3 script").arg(sceneId).arg(ennemyId).arg(scriptTextId);
+						qint64 pos = f.pos();
 						if (! csv.readLine(line) || line.size() < 3) {
 							qWarning() << "Error: No more lines";
 							args.showHelp(1);
 						}
-						it.setTextData(FF7Text(line.at(2), jp).data());
+						
+						if (! line.at(1).contains(" script ")) {
+							f.seek(pos); // Go back to the beginning of the line
 
-						scriptTextId += 1;
+							break;
+						}
 					}
+				} else {
+					QList<SceneScript> scripts = sf.ennemyScript(ennemyId);
+					for (SceneScript &script: scripts) {
+						if (script.isNull()) {
+							continue;
+						}
+	
+						int scriptTextId = 0;
+						SceneScriptMutableIterator it(script);
+						forever {
+							int pos = -1;
+							it.nextTextData(pos);
+	
+							if (pos < 0) {
+								break;
+							}
+	
+							if (! csv.readLine(line) || line.size() < 3) {
+								qWarning() << "Error: No more lines";
+								args.showHelp(1);
+							}
+							it.setTextData(FF7Text(line.at(col), jp).data());
+	
+							scriptTextId += 1;
+						}
+					}
+					sf.setEnnemyScript(ennemyId, scripts);
 				}
-				sf.setEnnemyScript(ennemyId, scripts);
 			}
 
 			QList<QByteArray> attackNames;
 			for (int attackId = 0; attackId < sf.attackNames().size(); ++attackId) {
-				qDebug() << QString("%1 %2 attack").arg(sceneId).arg(attackId);
 				if (! csv.readLine(line) || line.size() < 3) {
 					qWarning() << "Error: No more lines";
 					args.showHelp(1);
 				}
-				attackNames.append(FF7Text(line.at(2), jp).data());
+				attackNames.append(FF7Text(line.at(col), jp).data());
 			}
 			sf.setAttackNames(attackNames);
 			if (!sf.compile()) {
@@ -132,12 +148,12 @@ int main(int argc, char *argv[])
 					args.showHelp(1);
 				}
 			} else {
-				qDebug() << "kernel.bin no need to be updated";
+				qDebug() << "kernel.bin does not need to be updated";
 				args.showHelp(1);
 			}
 		}
 	} else {
-		QFile f(args.filePath());
+		QFile f(filePath);
 		if (! f.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 			qWarning() << "Error: Cannot open target file" << f.errorString() << f.fileName();
 			args.showHelp(1);

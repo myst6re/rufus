@@ -21,8 +21,10 @@ public:
 	QString scenePath() const;
 	QString filePath() const;
 	QString kernelPath() const;
+	uint column();
 	bool import() const;
 	bool jp() const;
+	bool skipScriptTexts() const;
 private:
 	QCommandLineParser _parser;
 };
